@@ -3,7 +3,6 @@ import uuid
 from django.db import models
 #from django.contrib.auth.models import User
 from django.conf import settings
-from user.models import Author
 
 # Create your models here.
 
@@ -29,7 +28,14 @@ class Language(models.Model):
     def __str__(self):
         return self.name
 
-
+class Author(models.Model):
+    first_name = models.CharField(max_length=30)
+    last_name = models.CharField(max_length=30)
+    email = models.EmailField(unique=True)
+    dob = models.DateField(blank=False, null=False)
+    dod = models.DateTimeField(blank=True, null=True)
+    def __str__(self):
+        return self.first_name + " " + self.last_name
 
 class Book(models.Model):
     title = models.CharField(max_length=255)
@@ -57,3 +63,10 @@ class BookInstance(models.Model):
 
     def __str__(self):
         return self.book.title
+
+
+class BookImage(models.Model):
+    image = models.ImageField(upload_to="book/images", blank=True)
+    book = models.ForeignKey(Book, on_delete=models.CASCADE, related_name="images")
+    def __str__(self):
+        return self.image.url
